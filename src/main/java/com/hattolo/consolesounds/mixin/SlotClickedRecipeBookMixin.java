@@ -1,7 +1,8 @@
 package com.hattolo.consolesounds.mixin;
 
-import com.hattolo.consolesounds.ConsoleSoundsClient;
 import com.hattolo.consolesounds.ConsoleSoundsConfig;
+import com.hattolo.consolesounds.ConsoleSoundsSounds;
+
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookGhostSlots;
@@ -26,7 +27,11 @@ public class SlotClickedRecipeBookMixin {
     private void slotClicked(@Nullable Slot slot, CallbackInfo ci) {
         if (slot != null && slot.id < craftingScreenHandler.getCraftingSlotCount()) {
             if (ghostSlots.getSlotCount() > 0) {
-                if (AutoConfig.getConfigHolder(ConsoleSoundsConfig.class).getConfig().enableCraftingSounds) MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(ConsoleSoundsClient.UI_FAIL_EVENT, 1.0F));
+                if (AutoConfig.getConfigHolder(ConsoleSoundsConfig.class).getConfig().enableCraftingSounds) {
+                    float eventVolume = AutoConfig.getConfigHolder(ConsoleSoundsConfig.class).getConfig().craftingVolume;
+                    float volume = eventVolume / 100.0F;
+                    MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(ConsoleSoundsSounds.UI_FAIL, 1.0F, volume));
+                }
             }
         }
     }
